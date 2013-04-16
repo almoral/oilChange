@@ -1,0 +1,109 @@
+<%content_for :head do %>
+
+<script type="text/javascript">
+
+
+  function capitalizeFirstLetter(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  $(document).ready(function(){
+
+    if($("#year option:selected").text() == "")
+    {
+      $("#makes").prop('disabled', 'disabled');
+      $("#models").prop('disabled', 'disabled');
+    }
+
+
+    $("select").on('change', function(e){
+
+    var valuesToSubmit = e.currentTarget.selectedOptions[0].innerText;
+
+    var form = document.getElementsByTagName('form');
+
+    var target = capitalizeFirstLetter(e.target.name);
+
+    var controller;
+
+    switch(target){
+
+      case 'Year':
+        controller = "makes"
+        break;
+
+      case 'Makes':
+        controller = "models"
+        valuesToSubmit += '&Year=' + $("#year option:selected").text();
+        break;
+
+      case 'Models':
+        controller = "mileage"
+        valuesToSubmit += '&Year=' + $("#year option:selected").text();
+        break;
+    };
+
+
+    $.ajax({
+        url: controller + ".json", //sumbits it to the given url of the form
+        data: target +'=' + valuesToSubmit,
+        dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+    }).success(function(json){
+        //act on result.
+
+        var length = json.length;
+
+        if(length > 1){
+
+        option = capitalizeFirstLetter(controller);
+
+        option = option.indexOf('s') > 0 ? option.substr(0, option.indexOf('s')) : option;
+
+
+        var arrOptions = [$('<option/>')];
+
+        for(var i=0; i < length; i++){
+          var newOption = $('<option/>');
+          newOption.text(json[i]["" + option + ""]);
+          newOption.attr('value', json[i]["" + option + ""]);
+          arrOptions.push(newOption);
+        }
+
+        $("#" + controller + "").html(arrOptions);
+        $("#" + controller + "").prop('disabled', false);
+      }
+      else
+      {
+        //Display mileage for vehicle.
+        $("#mileage").text(json[0].Mileage);
+      }
+    });
+    return false; // prevents normal behaviour
+
+
+    });
+
+
+  });
+
+</script>
+
+<% end %>
+
+
+<div id="oilChangeApp">
+
+
+<%= form_tag("car/makes", :method => "get", :remote => true) do %>
+
+<%= select_tag 'year', options_from_collection_for_select(@years, 'ID', 'Year'), { :include_blank => true} %>
+
+<%= select_tag 'makes', options_from_collection_for_select(@makes, 'ID', 'Make'), { :include_blank => true} %>
+
+<%= select_tag 'models', options_from_collection_for_select(@models, 'ID', 'Model'), { :include_blank => true} %>
+
+<% end %>
+
+<div id="mileage"></div>
+
+</div>

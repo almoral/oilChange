@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Year:</b>
+  <%= @user.year %>
+</p>
+
+<p>
+  <b>Make:</b>
+  <%= @user.make %>
+</p>
+
+<p>
+  <b>Model:</b>
+  <%= @user.model %>
+</p>
+
+<p>
+  <b>Mileage:</b>
+  <%= @user.mileage %>
+</p>
+
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

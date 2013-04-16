@@ -1,0 +1,21 @@
+
+<div id="oilChangeApp">
+
+<% if false %>
+<% @cars.each do |car| %>
+
+  <select id="dd_year">
+    <option>
+      
+    </option>
+  </select>
+
+<% end %>
+<% end %>
+
+<%= form_tag @car, :url => { :action => "index" }, :html => {:class => 'oil_change_form'} do |f| %>
+  
+<%= collection_select(:car, :year, Car.all, :id, :year)
+
+<% end %>
+</div>
