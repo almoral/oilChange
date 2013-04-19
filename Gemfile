@@ -9,6 +9,8 @@ gem 'rails', '3.2.13'
 
 gem 'mysql2'
 
+gem 'pg'
+
 gem 'yaml_db'
 
 # Gems used only for assets and not required
